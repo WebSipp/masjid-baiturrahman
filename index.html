@@ -396,7 +396,7 @@
             z-index: 1;
         }
         
-        /* RUNNING TEXT - ADAB ISLAM (SEDERHANA DAN PASTI MUNCUL) */
+        /* RUNNING TEXT - ADAB ISLAM */
         .marquee-container {
             background: linear-gradient(90deg, rgba(240, 247, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%);
             padding: 8px 0;
@@ -466,120 +466,239 @@
             font-size: 1.6rem;
         }
         
-        /* RESPONSIVE UNTUK TV BESAR (4K) - DIPERBAIKI */
-        @media (min-width: 1921px) {
+        /* RESPONSIVE UNTUK TV BESAR - DIPERBAIKI LAGI */
+        
+        /* TV 4K (3840x2160) */
+        @media (min-width: 3840px) {
             body {
-                font-size: 1.2rem;
+                font-size: 2.5rem;
             }
             
             .header {
-                padding: 25px 50px;
-                min-height: 100px;
+                padding: 50px 100px;
+                min-height: 200px;
             }
             
             .hijri-date {
-                font-size: 1.8rem;
+                font-size: 3.5rem;
             }
             
             .gregorian-date {
-                font-size: 1.4rem;
+                font-size: 2.5rem;
             }
             
             .masjid-name {
-                font-size: 2.8rem;
+                font-size: 5rem;
             }
             
             .masjid-address {
-                font-size: 1.1rem;
+                font-size: 2rem;
             }
             
             .main-container {
-                padding: 20px 30px;
-                gap: 30px;
-                height: calc(100vh - 200px);
+                padding: 50px 80px;
+                gap: 60px;
+                height: calc(100vh - 400px);
             }
             
             .sidebar-left {
                 flex: 0 0 35%;
-                gap: 25px;
+                gap: 50px;
             }
             
             .timer-section {
-                padding: 30px;
-                border-radius: 25px;
-                min-height: 250px;
+                padding: 60px;
+                border-radius: 40px;
+                min-height: 500px;
             }
             
             .digital-clock {
-                font-size: 5rem;
+                font-size: 10rem;
             }
             
             .timezone {
-                font-size: 1.5rem;
+                font-size: 3rem;
             }
             
             .countdown-container {
-                padding: 20px;
-                border-radius: 18px;
-                min-height: 110px;
+                padding: 40px;
+                border-radius: 30px;
+                min-height: 220px;
             }
             
             .next-prayer-name {
-                font-size: 1.6rem;
+                font-size: 3.5rem;
             }
             
             .countdown-timer {
-                font-size: 2.5rem;
+                font-size: 5rem;
             }
             
             .wisdom-text {
+                font-size: 3rem;
+                line-height: 2;
+            }
+            
+            .wisdom-reference {
+                font-size: 2.5rem;
+                padding: 20px 40px;
+            }
+            
+            .prayer-schedule {
+                min-height: 250px;
+                padding: 30px 0;
+                border-radius: 40px 40px 0 0;
+            }
+            
+            .schedule-title {
+                font-size: 3rem;
+                margin-bottom: 30px;
+            }
+            
+            .prayer-item {
+                padding: 30px 15px;
+                border-radius: 25px;
+                margin: 0 10px;
+            }
+            
+            .prayer-name {
+                font-size: 2.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .prayer-time {
+                font-size: 3.5rem;
+            }
+            
+            .marquee-container {
+                height: 100px;
+            }
+            
+            .adab-item {
+                font-size: 2.5rem;
+                padding: 0 120px;
+            }
+            
+            .adab-item i {
+                font-size: 2.5rem;
+                margin-right: 25px;
+            }
+        }
+        
+        /* TV 2K/QHD (2560x1440) dan TV Full HD Besar (1920x1080) */
+        @media (min-width: 1920px) and (max-width: 3839px) {
+            body {
+                font-size: 1.5rem;
+            }
+            
+            .header {
+                padding: 30px 60px;
+                min-height: 120px;
+            }
+            
+            .hijri-date {
+                font-size: 2.2rem;
+            }
+            
+            .gregorian-date {
                 font-size: 1.6rem;
+            }
+            
+            .masjid-name {
+                font-size: 3.2rem;
+            }
+            
+            .masjid-address {
+                font-size: 1.3rem;
+            }
+            
+            .main-container {
+                padding: 30px 50px;
+                gap: 40px;
+                height: calc(100vh - 250px);
+            }
+            
+            .sidebar-left {
+                flex: 0 0 35%;
+                gap: 30px;
+            }
+            
+            .timer-section {
+                padding: 40px;
+                border-radius: 30px;
+                min-height: 300px;
+            }
+            
+            .digital-clock {
+                font-size: 6.5rem;
+            }
+            
+            .timezone {
+                font-size: 2rem;
+            }
+            
+            .countdown-container {
+                padding: 25px;
+                border-radius: 20px;
+                min-height: 130px;
+            }
+            
+            .next-prayer-name {
+                font-size: 2rem;
+            }
+            
+            .countdown-timer {
+                font-size: 3.2rem;
+            }
+            
+            .wisdom-text {
+                font-size: 1.8rem;
                 line-height: 1.8;
             }
             
             .wisdom-reference {
-                font-size: 1.2rem;
-                padding: 8px 20px;
+                font-size: 1.4rem;
+                padding: 12px 25px;
             }
             
             .prayer-schedule {
-                min-height: 130px;
-                padding: 15px 0;
-                border-radius: 25px 25px 0 0;
+                min-height: 150px;
+                padding: 20px 0;
+                border-radius: 30px 30px 0 0;
             }
             
             .schedule-title {
-                font-size: 1.5rem;
-                margin-bottom: 15px;
+                font-size: 1.8rem;
+                margin-bottom: 20px;
             }
             
             .prayer-item {
-                padding: 15px 8px;
-                border-radius: 12px;
-                margin: 0 4px;
+                padding: 18px 10px;
+                border-radius: 15px;
+                margin: 0 6px;
             }
             
             .prayer-name {
-                font-size: 1.1rem;
-                margin-bottom: 8px;
+                font-size: 1.3rem;
+                margin-bottom: 10px;
             }
             
             .prayer-time {
-                font-size: 1.8rem;
+                font-size: 2.2rem;
             }
             
             .marquee-container {
-                height: 55px;
+                height: 60px;
             }
             
             .adab-item {
-                font-size: 1.3rem;
-                padding: 0 70px;
+                font-size: 1.6rem;
+                padding: 0 80px;
             }
             
             .adab-item i {
-                font-size: 1.3rem;
-                margin-right: 12px;
+                font-size: 1.6rem;
+                margin-right: 15px;
             }
         }
         
@@ -794,6 +913,20 @@
             }
         }
         
+        /* DEBUG MODE UNTUK TV */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 9999;
+            display: none;
+        }
+        
         /* ANIMASI */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -856,6 +989,9 @@
     </style>
 </head>
 <body>
+    <!-- DEBUG INFO -->
+    <div class="debug-info" id="debug-info"></div>
+    
     <!-- FULLSCREEN OVERLAY (akan dihilangkan setelah masuk fullscreen) -->
     <div class="fullscreen-overlay" id="fullscreen-overlay">
         <h2>Display Digital Masjid Baiturrahman</h2>
@@ -863,6 +999,7 @@
         <button class="fullscreen-btn" id="enter-fullscreen-btn">
             <i class="fas fa-expand"></i> Buka Layar Penuh
         </button>
+        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">Tekan F11 untuk toggle fullscreen | ESC untuk keluar</p>
     </div>
     
     <!-- HEADER - TANGGAL DAN INFO MASJID -->
@@ -1128,7 +1265,7 @@
                 `${hijriDay} ${hijriMonth} ${hijriYear} H`;
         }
         
-        // FUNGSI UNTUK MEMBUAT RUNNING TEXT ADAB (PASTI MUNCUL)
+        // FUNGSI UNTUK MEMBUAT RUNNING TEXT ADAB
         function createAdabMarquee() {
             const marqueeTrack = document.getElementById('marquee-track');
             marqueeTrack.innerHTML = '';
@@ -1243,18 +1380,27 @@
             
             // Hitung tinggi yang tersedia untuk main container
             const windowHeight = window.innerHeight;
+            const windowWidth = window.innerWidth;
             const availableHeight = windowHeight - headerHeight - footerHeight - marqueeHeight;
             
             // Set tinggi main container
             mainContainer.style.height = availableHeight + 'px';
             
-            console.log('Height Calculation:', {
-                windowHeight,
-                headerHeight,
-                footerHeight,
-                marqueeHeight,
-                availableHeight
-            });
+            // Update debug info
+            const debugInfo = document.getElementById('debug-info');
+            debugInfo.innerHTML = `
+                Resolusi: ${windowWidth}x${windowHeight}<br>
+                Header: ${headerHeight}px<br>
+                Footer: ${footerHeight}px<br>
+                Marquee: ${marqueeHeight}px<br>
+                Available: ${availableHeight}px<br>
+                Screen: ${window.screen.width}x${window.screen.height}
+            `;
+            
+            // Tampilkan debug info jika di TV
+            if (windowWidth >= 1920) {
+                debugInfo.style.display = 'block';
+            }
         }
         
         // INISIALISASI SAAT HALAMAN DIMUAT
@@ -1292,6 +1438,12 @@
                 // Tombol ESC juga bisa keluar fullscreen (opsional)
                 if (e.key === 'Escape' && document.fullscreenElement) {
                     exitFullscreen();
+                }
+                
+                // Tombol D untuk debug
+                if (e.key === 'd' || e.key === 'D') {
+                    const debugInfo = document.getElementById('debug-info');
+                    debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
                 }
             });
             
@@ -1337,6 +1489,25 @@
                 }
                 document.removeEventListener('click', firstClick);
             });
+            
+            // Tambah tombol debug manual di overlay
+            const overlay = document.getElementById('fullscreen-overlay');
+            const debugBtn = document.createElement('button');
+            debugBtn.innerHTML = '<i class="fas fa-bug"></i> Mode Debug';
+            debugBtn.style.cssText = `
+                background: transparent;
+                color: white;
+                border: 1px solid white;
+                padding: 8px 15px;
+                margin-top: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 0.8rem;
+            `;
+            debugBtn.onclick = function() {
+                document.getElementById('debug-info').style.display = 'block';
+            };
+            overlay.appendChild(debugBtn);
         });
     </script>
 </body>
