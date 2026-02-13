@@ -1359,7 +1359,9 @@
                 fallback.forEach((url, index) => {
                     const slide = document.createElement('div');
                     slide.className = `wallpaper-slide ${index === 0 ? 'active' : ''}`;
-                    slide.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${url}')`;
+                    const fileId = wallpaper.image_url.split('id=')[1];
+                    const thumbnailUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920`;
+                    slide.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${thumbnailUrl}')`;
                     slide.style.backgroundSize = 'cover';
                     slide.style.backgroundPosition = 'center';
                     container.appendChild(slide);
@@ -1399,7 +1401,12 @@
                 slide.className = `announcement-slide ${index === 0 ? 'active' : ''}`;
                 
                 const img = document.createElement('img');
-                img.src = announcement.image_url;
+                let imageUrl = announcement.image_url;
+                if (imageUrl && imageUrl.includes('id=')) {
+                const fileId = imageUrl.split('id=')[1].split('&')[0];
+                imageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920`;
+                }
+                img.src = imageUrl;
                 img.alt = `Pengumuman ${index + 1}`;
                 img.onerror = function() {
                     this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23ddd" width="200" height="200"/><text fill="%23999" x="50%" y="50%" text-anchor="middle" dy=".3em">Gambar Error</text></svg>';
