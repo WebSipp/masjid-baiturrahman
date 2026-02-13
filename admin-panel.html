@@ -3,806 +3,2576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Masjid Baiturrahman</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Admin Panel - Masjid Baiturrahman STMIK Tazkia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-gray-50">
-
-    <!-- CONST API URL - JANGAN DIUBAH -->
-    <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbymSPcmpQWApXl5-f1HVVqPK1O-PM1klMi2rH1wqEUIcVKwAY8yY9YO8URhDjpiqoHP-g/exec';
-    </script>
-
-    <!-- LOADING OVERLAY -->
-    <div id="loading-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center">
-        <div class="bg-white p-6 rounded-2xl shadow-xl">
-            <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-            <p class="mt-4 text-gray-700">Memproses...</p>
-        </div>
-    </div>
-
-    <!-- LOGIN PAGE -->
-    <div id="login-page" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-blue-700 p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
-            <div class="text-center mb-8">
-                <i class="fas fa-mosque text-5xl text-blue-800 mb-4"></i>
-                <h1 class="text-3xl font-bold text-gray-800">Admin Panel</h1>
-                <p class="text-gray-600 mt-2">Masjid Baiturrahman STMIK Tazkia</p>
-            </div>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           ADMIN PANEL - VERSION FINAL
+           100% SINKRON DENGAN GAS
+           ======================================== */
+        
+        :root {
+            --primary-dark: #1A4D8C;
+            --primary-light: #5D8DC0;
+            --accent-blue: #2E77BB;
+            --text-dark: #2C3E50;
+            --text-light: #F8F9FA;
+            --bg-white: #FFFFFF;
+            --bg-light: #F0F4F8;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --gray: #6c757d;
+            --border: #e0e0e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+        
+        /* ========== LOGIN PAGE ========== */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-blue) 100%);
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .login-box h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .login-box h2 {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .login-box .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(46, 119, 187, 0.1);
+        }
+        
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .login-box button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .login-box button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* ========== MAIN APP LAYOUT ========== */
+        .app-container {
+            display: none;
+        }
+        
+        .app-container.active {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: left 0.3s;
+            border-right: 1px solid var(--border);
+        }
+        
+        .sidebar.hidden {
+            left: -250px;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: var(--primary-dark);
+            color: white;
+            text-align: center;
+        }
+        
+        .sidebar-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 5px 0;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-menu a:hover {
+            background: var(--bg-light);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+        }
+        
+        .sidebar-menu a.active {
+            background: var(--accent-blue);
+            color: white;
+            border-left-color: white;
+        }
+        
+        .sidebar-menu a i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .btn-logout {
+            width: 100%;
+            padding: 10px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        
+        .btn-logout:hover {
+            background: #c82333;
+        }
+        
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            transition: margin-left 0.3s;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            cursor: pointer;
+        }
+        
+        .top-bar h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: var(--bg-light);
+            border-radius: 50px;
+        }
+        
+        .user-info i {
+            color: var(--accent-blue);
+        }
+        
+        .content-area {
+            padding: 30px;
+        }
+        
+        /* ========== PAGE SECTIONS ========== */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        /* ========== STATS CARDS ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+        }
+        
+        .stat-card-info h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-card-info p {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+        
+        /* ========== BUTTONS ========== */
+        .btn-primary {
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            box-shadow: 0 2px 4px rgba(46, 119, 187, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 3px 6px rgba(46, 119, 187, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            padding: 10px 20px;
+            background: var(--gray);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-icon {
+            padding: 8px 12px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            margin: 0 2px;
+        }
+        
+        .btn-icon:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-icon.btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-icon.btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* ========== FORMS ========== */
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .form-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Open Sans', sans-serif;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(46, 119, 187, 0.1);
+        }
+        
+        .form-group input.error,
+        .form-group textarea.error,
+        .form-group select.error {
+            border-color: var(--danger);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        /* ========== TABLE ========== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .page-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        table thead {
+            background: var(--primary-dark);
+            color: white;
+        }
+        
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        table tbody tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .text-truncate {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: help;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-quran {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge-hadith {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        /* ========== TOGGLE SWITCH ========== */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .2s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .2s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* ========== MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: var(--danger);
+        }
+        
+        .modal-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        /* ========== TABS ========== */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ========== IMAGE GRID ========== */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .image-card-info {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .image-card-order {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .image-card-order label {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .image-card-order input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        /* ========== UPLOAD AREA ========== */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: var(--accent-blue);
+            background: var(--bg-light);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+        
+        .upload-area p {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        
+        .upload-area small {
+            color: #666;
+        }
+        
+        #wallpaper-preview,
+        #announcement-preview {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        #wallpaper-preview img,
+        #announcement-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-blue);
+            transition: width 0.3s;
+            width: 0%;
+        }
+        
+        /* ========== LOADING OVERLAY ========== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ========== TOAST ========== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 4000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            min-width: 300px;
+            max-width: 500px;
+            border: 1px solid var(--border);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast i {
+            font-size: 1.5rem;
+        }
+        
+        .toast-success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .toast-success i {
+            color: var(--success);
+        }
+        
+        .toast-error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .toast-error i {
+            color: var(--danger);
+        }
+        
+        .toast-info {
+            border-left: 4px solid var(--accent-blue);
+        }
+        
+        .toast-info i {
+            color: var(--accent-blue);
+        }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
             
-            <div id="login-error" class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm hidden"></div>
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .top-bar {
+                padding: 15px;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                flex-direction: column;
+            }
+            
+            .quick-actions button {
+                width: 100%;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-actions {
+                width: 100%;
+            }
+            
+            .page-actions select,
+            .page-actions button {
+                flex: 1;
+            }
+            
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .toast {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- LOGIN PAGE -->
+    <div class="login-container" id="login-page">
+        <div class="login-box">
+            <h1><i class="fas fa-mosque"></i> Admin Panel</h1>
+            <h2>Masjid Baiturrahman STMIK Tazkia</h2>
+            
+            <div id="login-error" style="color: var(--danger); margin-bottom: 15px; display: none;"></div>
             
             <form id="login-form">
-                <div class="space-y-5">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                        <input type="text" id="username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Masukkan username" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" id="btn-login" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center space-x-2">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span>Masuk</span>
-                    </button>
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" value="masjid" required>
                 </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" value="Password321" required>
+                </div>
+                <button type="submit" id="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
             </form>
-            <p class="text-xs text-gray-500 text-center mt-4">Login</p>
         </div>
     </div>
-
+    
     <!-- MAIN APP -->
-    <div id="app-container" class="hidden min-h-screen bg-gray-50">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform z-40">
-            <div class="h-full flex flex-col">
-                <div class="p-6 bg-gradient-to-r from-blue-800 to-blue-900">
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-mosque text-2xl text-white"></i>
-                        <div>
-                            <h3 class="font-bold text-white">Masjid Panel</h3>
-                            <p id="user-display" class="text-blue-200 text-sm">Admin</p>
-                        </div>
-                    </div>
-                </div>
-                <nav class="flex-1 overflow-y-auto py-4">
-                    <ul class="space-y-1 px-3">
-                        <li><a href="#" data-page="dashboard" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-tachometer-alt w-6"></i> Dashboard</a></li>
-                        <li><a href="#" data-page="config" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-cog w-6"></i> Konfigurasi</a></li>
-                        <li><a href="#" data-page="wisdoms" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-book w-6"></i> Konten Hikmah</a></li>
-                        <li><a href="#" data-page="wallpapers" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-image w-6"></i> Wallpaper</a></li>
-                        <li><a href="#" data-page="adabs" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-hands-praying w-6"></i> Adab Islam</a></li>
-                        <li><a href="#" data-page="friday-schedule" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-calendar-week w-6"></i> Jadwal Jumat</a></li>
-                        <li><a href="#" data-page="announcements" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-bullhorn w-6"></i> Pengumuman Jumat</a></li>
-                        <li><a href="#" data-page="friday-wisdoms" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-star w-6"></i> Hadis Jumat</a></li>
-                    </ul>
-                </nav>
-                <div class="p-4 border-t">
-                    <button onclick="logout()" class="w-full flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </button>
-                </div>
+    <div class="app-container" id="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-mosque"></i> Masjid Panel</h3>
+                <p id="user-display">Admin</p>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="#" onclick="switchPage('dashboard')" class="active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" onclick="switchPage('config')" data-page="config"><i class="fas fa-cog"></i> Konfigurasi</a></li>
+                <li><a href="#" onclick="switchPage('wisdoms')" data-page="wisdoms"><i class="fas fa-book"></i> Konten Hikmah</a></li>
+                <li><a href="#" onclick="switchPage('wallpapers')" data-page="wallpapers"><i class="fas fa-image"></i> Wallpaper</a></li>
+                <li><a href="#" onclick="switchPage('adabs')" data-page="adabs"><i class="fas fa-hands-praying"></i> Adab Islam</a></li>
+                <li><a href="#" onclick="switchPage('friday-schedule')" data-page="friday-schedule"><i class="fas fa-calendar-week"></i> Jadwal Jumat</a></li>
+                <li><a href="#" onclick="switchPage('announcements')" data-page="announcements"><i class="fas fa-bullhorn"></i> Pengumuman Jumat</a></li>
+                <li><a href="#" onclick="switchPage('friday-wisdoms')" data-page="friday-wisdoms"><i class="fas fa-star"></i> Hadis Jumat</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
         </aside>
-
-        <!-- Main Content -->
-        <main id="main-content" class="lg:ml-64 min-h-screen transition-all">
-            <!-- Top Bar -->
-            <div class="bg-white shadow-sm sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <button id="hamburger" onclick="toggleSidebar()" class="lg:hidden text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-bars text-2xl"></i>
+        
+        <!-- MAIN CONTENT -->
+        <main class="main-content" id="main-content">
+            <!-- TOP BAR -->
+            <div class="top-bar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
                     </button>
-                    <h1 id="page-title" class="text-2xl font-bold text-gray-800">Dashboard</h1>
+                    <h2 id="page-title">Dashboard</h2>
                 </div>
-                <div class="flex items-center space-x-3 bg-gray-100 px-4 py-2 rounded-full">
-                    <i class="fas fa-user-circle text-blue-600 text-xl"></i>
-                    <span id="user-name" class="font-medium text-gray-700">Admin</span>
+                <div class="top-bar-actions">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="user-name">Admin</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Content Area -->
-            <div class="p-6">
+            
+            <!-- CONTENT AREA -->
+            <div class="content-area" id="content-area">
                 <!-- DASHBOARD -->
-                <div id="page-dashboard" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <h2 class="text-xl font-bold mb-4">Dashboard</h2>
-                        <div id="dashboard-stats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <p class="text-sm text-gray-600">Status API</p>
-                                <p id="api-status" class="text-lg font-semibold text-green-600">Mengecek...</p>
+                <section class="page-section active" id="page-dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card"><i class="fas fa-book"></i><div class="stat-card-info"><h3 id="total-wisdoms">0</h3><p>Konten Hikmah</p></div></div>
+                        <div class="stat-card"><i class="fas fa-image"></i><div class="stat-card-info"><h3 id="total-wallpapers">0</h3><p>Wallpaper Aktif</p></div></div>
+                        <div class="stat-card"><i class="fas fa-mosque"></i><div class="stat-card-info"><h3 id="masjid-name-display">Loading...</h3><p>Nama Masjid</p></div></div>
+                        <div class="stat-card"><i class="fas fa-check-circle"></i><div class="stat-card-info"><h3 style="color: var(--success);">Online</h3><p>Status API</p></div></div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="btn-primary" onclick="previewDisplay()"><i class="fas fa-eye"></i> Preview Display</button>
+                        <button class="btn-primary" onclick="refreshAllData()"><i class="fas fa-sync"></i> Refresh Data</button>
+                        <button class="btn-primary" onclick="forcePrayerUpdate()"><i class="fas fa-cloud-sun"></i> Update Jadwal Shalat</button>
+                    </div>
+                    
+                    <div class="form-section" style="margin-top: 30px;">
+                        <h3>Informasi Sistem</h3>
+                        <p><strong>Nama Masjid:</strong> <span id="info-masjid-name">-</span></p>
+                        <p><strong>Alamat:</strong> <span id="info-masjid-address">-</span></p>
+                        <p><strong>Last Sync:</strong> <span id="last-sync-time">-</span></p>
+                    </div>
+                </section>
+                
+                <!-- KONFIGURASI -->
+                <section class="page-section" id="page-config">
+                    <form id="config-form">
+                        <div class="form-section">
+                            <h3><i class="fas fa-mosque"></i> Informasi Masjid</h3>
+                            <div class="form-group"><label>Nama Masjid</label><input type="text" name="masjid_name" required></div>
+                            <div class="form-group"><label>Alamat Masjid</label><textarea name="masjid_address" rows="3" required></textarea></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Latitude</label><input type="text" name="latitude" required pattern="-?\d+\.?\d*" placeholder="-6.5456" title="Contoh: -6.5456"><small class="error-message" id="error-latitude"></small></div>
+                                <div class="form-group"><label>Longitude</label><input type="text" name="longitude" required pattern="-?\d+\.?\d*" placeholder="106.7367" title="Contoh: 106.7367"><small class="error-message" id="error-longitude"></small></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Timezone</label><select name="timezone" required><option value="Asia/Jakarta">Asia/Jakarta (WIB)</option><option value="Asia/Makassar">Asia/Makassar (WITA)</option><option value="Asia/Jayapura">Asia/Jayapura (WIT)</option></select></div>
+                                <div class="form-group"><label>Metode API</label><select name="api_method" required><option value="11">11 - Kemenag RI</option><option value="2">2 - ISNA</option><option value="3">3 - MWL</option></select></div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- CONFIG -->
-                <div id="page-config" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <h2 class="text-xl font-bold mb-4">Konfigurasi</h2>
-                        <form id="config-form">
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Nama Masjid</label>
-                                <input type="text" name="masjid_name" class="w-full border p-3 rounded-lg">
+                        
+                        <div class="form-section">
+                            <h3><i class="fas fa-clock"></i> Durasi Tampilan (detik)</h3>
+                            <div class="form-row">
+                                <div class="form-group"><label>Durasi Hikmah</label><input type="number" name="wisdom_duration" min="10" max="300" required></div>
+                                <div class="form-group"><label>Durasi Wallpaper</label><input type="number" name="wallpaper_duration" min="10" max="120" required></div>
+                                <div class="form-group"><label>Durasi Pengumuman</label><input type="number" name="announcement_duration" min="10" max="120" required></div>
                             </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Alamat</label>
-                                <input type="text" name="masjid_address" class="w-full border p-3 rounded-lg">
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Latitude</label>
-                                    <input type="text" name="latitude" class="w-full border p-3 rounded-lg">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Longitude</label>
-                                    <input type="text" name="longitude" class="w-full border p-3 rounded-lg">
-                                </div>
-                            </div>
-                            <button type="submit" class="bg-blue-700 text-white px-6 py-3 rounded-lg">Simpan</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- WISDOMS -->
-                <div id="page-wisdoms" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <div class="flex justify-between mb-4">
-                            <h2 class="text-xl font-bold">Konten Hikmah</h2>
-                            <button onclick="showAddWisdomModal()" class="bg-blue-700 text-white px-4 py-2 rounded-lg">
-                                <i class="fas fa-plus mr-2"></i>Tambah
-                            </button>
                         </div>
-                        <div id="wisdoms-container" class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="p-3 text-left">Hari</th>
-                                        <th class="p-3 text-left">Teks</th>
-                                        <th class="p-3 text-left">Referensi</th>
-                                        <th class="p-3 text-left">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="wisdoms-tbody">
-                                    <tr><td colspan="4" class="text-center p-4">Memuat data...</td></tr>
-                                </tbody>
+                        
+                        <div class="form-section">
+                            <h3><i class="fas fa-scroll"></i> Running Text (detik)</h3>
+                            <div class="form-row">
+                                <div class="form-group"><label>Kecepatan Normal</label><input type="number" name="marquee_speed" min="100" max="600" required></div>
+                                <div class="form-group"><label>Kecepatan Jumat</label><input type="number" name="marquee_speed_friday" min="100" max="600" required></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3><i class="fas fa-pray"></i> Mode Azan & Shalat (detik)</h3>
+                            <div class="form-row">
+                                <div class="form-group"><label>Countdown Azan</label><input type="number" name="azan_countdown" min="10" max="120" required></div>
+                                <div class="form-group"><label>Countdown Iqamah</label><input type="number" name="iqamah_countdown" min="60" max="600" required></div>
+                                <div class="form-group"><label>Durasi Shalat</label><input type="number" name="salah_duration" min="300" max="900" required></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3><i class="fas fa-calendar-week"></i> Mode Jumat</h3>
+                            <div class="form-row">
+                                <div class="form-group"><label>Jam Mulai (0-23)</label><input type="number" name="friday_start_hour" min="0" max="23" required></div>
+                                <div class="form-group"><label>Jam Selesai (0-23)</label><input type="number" name="friday_end_hour" min="0" max="23" required></div>
+                                <div class="form-group"><label>Countdown (detik)</label><input type="number" name="friday_countdown" min="10" max="300" required></div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" id="btn-save-config"><i class="fas fa-save"></i> Simpan Konfigurasi</button>
+                    </form>
+                </section>
+                
+                <!-- KONTEN HIKMAH -->
+                <section class="page-section" id="page-wisdoms">
+                    <div class="page-header">
+                        <h2>Konten Hikmah</h2>
+                        <div class="page-actions">
+                            <select id="filter-day" onchange="filterWisdoms()">
+                                <option value="">Semua Hari</option>
+                                <option value="monday">Senin</option>
+                                <option value="tuesday">Selasa</option>
+                                <option value="wednesday">Rabu</option>
+                                <option value="thursday">Kamis</option>
+                                <option value="friday">Jumat</option>
+                                <option value="saturday">Sabtu</option>
+                                <option value="sunday">Minggu</option>
+                            </select>
+                            <button class="btn-primary" onclick="showAddWisdomModal()"><i class="fas fa-plus"></i> Tambah Hikmah</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Hari</th><th>Urutan</th><th>Teks</th><th>Referensi</th><th>Tipe</th><th>Status</th><th>Aksi</th></tr></thead>
+                                <tbody id="wisdoms-tbody"><tr><td colspan="7" style="text-align: center;">Loading...</td></tr></tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <!-- WALLPAPERS -->
-                <div id="page-wallpapers" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <div class="flex justify-between mb-4">
-                            <h2 class="text-xl font-bold">Wallpaper</h2>
-                            <button onclick="showUploadWallpaperModal()" class="bg-blue-700 text-white px-4 py-2 rounded-lg">
-                                <i class="fas fa-upload mr-2"></i>Upload
-                            </button>
-                        </div>
-                        <div id="wallpapers-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                </section>
+                
+                <!-- WALLPAPER -->
+                <section class="page-section" id="page-wallpapers">
+                    <div class="page-header">
+                        <h2>Wallpaper</h2>
+                        <button class="btn-primary" onclick="showUploadWallpaperModal()"><i class="fas fa-upload"></i> Upload Wallpaper</button>
                     </div>
-                </div>
-
-                <!-- FRIDAY WISDOMS -->
-                <div id="page-friday-wisdoms" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <div class="flex justify-between mb-4">
-                            <h2 class="text-xl font-bold">Hadis Jumat</h2>
-                            <button onclick="showAddFridayWisdomModal()" class="bg-blue-700 text-white px-4 py-2 rounded-lg">
-                                <i class="fas fa-plus mr-2"></i>Tambah
-                            </button>
+                    
+                    <div class="image-grid" id="wallpapers-grid"><p>Loading...</p></div>
+                </section>
+                
+                <!-- ADAB ISLAM -->
+                <section class="page-section" id="page-adabs">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchAdabTab(event, 'normal')">Adab Normal</button>
+                        <button class="tab" onclick="switchAdabTab(event, 'friday')">Adab Jumat</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="tab-adab-normal">
+                        <div class="page-header">
+                            <h2>Adab Normal</h2>
+                            <button class="btn-primary" onclick="showAddAdabModal('normal')"><i class="fas fa-plus"></i> Tambah Adab</button>
                         </div>
-                        <div id="friday-wisdoms-container" class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="p-3 text-left">Urutan</th>
-                                        <th class="p-3 text-left">Teks</th>
-                                        <th class="p-3 text-left">Referensi</th>
-                                        <th class="p-3 text-left">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="friday-wisdoms-tbody">
-                                    <tr><td colspan="4" class="text-center p-4">Memuat data...</td></tr>
-                                </tbody>
+                        <div class="table-container">
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Urutan</th><th>Teks</th><th>Icon</th><th>Status</th><th>Aksi</th></tr></thead>
+                                    <tbody id="adabs-normal-tbody"><tr><td colspan="5" style="text-align: center;">Loading...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-adab-friday">
+                        <div class="page-header">
+                            <h2>Adab Jumat</h2>
+                            <button class="btn-primary" onclick="showAddAdabModal('friday')"><i class="fas fa-plus"></i> Tambah Adab</button>
+                        </div>
+                        <div class="table-container">
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Urutan</th><th>Teks</th><th>Icon</th><th>Status</th><th>Aksi</th></tr></thead>
+                                    <tbody id="adabs-friday-tbody"><tr><td colspan="5" style="text-align: center;">Loading...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- JADWAL JUMAT -->
+                <section class="page-section" id="page-friday-schedule">
+                    <form id="friday-schedule-form">
+                        <div class="form-section">
+                            <h3><i class="fas fa-clock"></i> Jadwal Shalat Jumat</h3>
+                            <div class="form-row">
+                                <div class="form-group"><label>Waktu Khutbah</label><input type="time" name="khutbah_time" required></div>
+                                <div class="form-group"><label>Waktu Iqamah</label><input type="time" name="iqamah_time" required></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3><i class="fas fa-users"></i> Petugas Jumat</h3>
+                            <div class="form-row">
+                                <div class="form-group"><label>Imam</label><input type="text" name="imam_name" required></div>
+                                <div class="form-group"><label>Khatib</label><input type="text" name="khatib_name" required></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Muadzin 1</label><input type="text" name="muadzin1_name" required></div>
+                                <div class="form-group"><label>Muadzin 2</label><input type="text" name="muadzin2_name" required></div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" id="btn-save-friday-schedule"><i class="fas fa-save"></i> Simpan</button>
+                    </form>
+                </section>
+                
+                <!-- PENGUMUMAN JUMAT -->
+                <section class="page-section" id="page-announcements">
+                    <div class="page-header">
+                        <h2>Pengumuman Jumat</h2>
+                        <button class="btn-primary" onclick="showUploadAnnouncementModal()"><i class="fas fa-upload"></i> Upload Pengumuman</button>
+                    </div>
+                    
+                    <div class="image-grid" id="announcements-grid"><p>Loading...</p></div>
+                </section>
+                
+                <!-- HADIS JUMAT -->
+                <section class="page-section" id="page-friday-wisdoms">
+                    <div class="page-header">
+                        <h2>Hadis Keutamaan Jumat</h2>
+                        <button class="btn-primary" onclick="showAddFridayWisdomModal()"><i class="fas fa-plus"></i> Tambah Hadis</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Urutan</th><th>Teks</th><th>Referensi</th><th>Status</th><th>Aksi</th></tr></thead>
+                                <tbody id="friday-wisdoms-tbody"><tr><td colspan="5" style="text-align: center;">Loading...</td></tr></tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <!-- FRIDAY SCHEDULE -->
-                <div id="page-friday-schedule" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <h2 class="text-xl font-bold mb-4">Jadwal Jumat</h2>
-                        <form id="friday-schedule-form">
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Waktu Khutbah</label>
-                                    <input type="time" name="khutbah_time" class="w-full border p-3 rounded-lg">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Waktu Iqamah</label>
-                                    <input type="time" name="iqamah_time" class="w-full border p-3 rounded-lg">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Imam</label>
-                                    <input type="text" name="imam_name" class="w-full border p-3 rounded-lg">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Khatib</label>
-                                    <input type="text" name="khatib_name" class="w-full border p-3 rounded-lg">
-                                </div>
-                            </div>
-                            <button type="submit" class="bg-blue-700 text-white px-6 py-3 rounded-lg">Simpan</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- ANNOUNCEMENTS -->
-                <div id="page-announcements" class="page-section hidden">
-                    <div class="bg-white rounded-2xl shadow-sm p-6">
-                        <div class="flex justify-between mb-4">
-                            <h2 class="text-xl font-bold">Pengumuman Jumat</h2>
-                            <button onclick="showUploadAnnouncementModal()" class="bg-blue-700 text-white px-4 py-2 rounded-lg">
-                                <i class="fas fa-upload mr-2"></i>Upload
-                            </button>
-                        </div>
-                        <div id="announcements-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-                    </div>
-                </div>
+                </section>
             </div>
         </main>
     </div>
-
-    <!-- MODAL TAMBAH WISDOM -->
-    <div id="wisdom-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6">
-            <h3 id="wisdom-modal-title" class="text-xl font-bold mb-4">Tambah Hikmah</h3>
-            <form id="wisdom-form">
-                <input type="hidden" name="id">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Hari</label>
-                    <select name="day" class="w-full border p-3 rounded-lg">
-                        <option value="monday">Senin</option>
-                        <option value="tuesday">Selasa</option>
-                        <option value="wednesday">Rabu</option>
-                        <option value="thursday">Kamis</option>
-                        <option value="friday">Jumat</option>
-                        <option value="saturday">Sabtu</option>
-                        <option value="sunday">Minggu</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Urutan</label>
-                    <input type="number" name="order" class="w-full border p-3 rounded-lg">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Teks</label>
-                    <textarea name="text" rows="4" class="w-full border p-3 rounded-lg"></textarea>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Referensi</label>
-                    <input type="text" name="reference" class="w-full border p-3 rounded-lg">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Tipe</label>
-                    <select name="type" class="w-full border p-3 rounded-lg">
-                        <option value="quran">Quran</option>
-                        <option value="hadith">Hadith</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="flex items-center">
-                        <input type="checkbox" name="active" checked class="mr-2">
-                        <span>Aktif</span>
-                    </label>
-                </div>
-                <div class="flex justify-end space-x-3">
-                    <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded-lg">Simpan</button>
-                    <button type="button" onclick="closeModal('wisdom-modal')" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Batal</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL UPLOAD WALLPAPER -->
-    <div id="upload-wallpaper-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6">
-            <h3 class="text-xl font-bold mb-4">Upload Wallpaper</h3>
-            <div class="mb-4">
-                <div id="wallpaper-upload-area" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500">
-                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
-                    <p class="text-gray-600">Klik atau drag file</p>
-                    <input type="file" id="wallpaper-file" accept="image/*" class="hidden">
-                </div>
-            </div>
-            <div id="wallpaper-preview" class="hidden mb-4">
-                <img id="wallpaper-preview-img" class="max-h-40 mx-auto rounded-lg">
-                <p id="wallpaper-filename" class="text-sm text-center mt-2"></p>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">Urutan</label>
-                <input type="number" id="wallpaper-order" class="w-full border p-3 rounded-lg" value="1">
-            </div>
-            <div id="upload-progress" class="hidden mb-4">
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="upload-progress-fill" class="bg-blue-600 h-2.5 rounded-full" style="width:0%"></div>
-                </div>
-                <p id="upload-progress-text" class="text-sm text-center mt-2">Mengupload...</p>
-            </div>
-            <div class="flex justify-end space-x-3">
-                <button onclick="uploadWallpaper()" class="bg-blue-700 text-white px-4 py-2 rounded-lg">Upload</button>
-                <button onclick="closeModal('upload-wallpaper-modal')" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Batal</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL TAMBAH FRIDAY WISDOM -->
-    <div id="friday-wisdom-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6">
-            <h3 class="text-xl font-bold mb-4">Tambah Hadis Jumat</h3>
-            <form id="friday-wisdom-form">
-                <input type="hidden" name="id">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Urutan</label>
-                    <input type="number" name="order" class="w-full border p-3 rounded-lg">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Teks</label>
-                    <textarea name="text" rows="4" class="w-full border p-3 rounded-lg"></textarea>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Referensi</label>
-                    <input type="text" name="reference" class="w-full border p-3 rounded-lg">
-                </div>
-                <div class="mb-4">
-                    <label class="flex items-center">
-                        <input type="checkbox" name="active" checked class="mr-2">
-                        <span>Aktif</span>
-                    </label>
-                </div>
-                <div class="flex justify-end space-x-3">
-                    <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded-lg">Simpan</button>
-                    <button type="button" onclick="closeModal('friday-wisdom-modal')" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Batal</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    
+    <!-- MODALS -->
+    <div class="modal" id="wisdom-modal"><div class="modal-content"><span class="close" onclick="closeModal('wisdom-modal')">&times;</span><h2 id="wisdom-modal-title">Tambah Hikmah</h2><form id="wisdom-form"><input type="hidden" name="id"><div class="form-group"><label>Hari</label><select name="day" required><option value="monday">Senin</option><option value="tuesday">Selasa</option><option value="wednesday">Rabu</option><option value="thursday">Kamis</option><option value="friday">Jumat</option><option value="saturday">Sabtu</option><option value="sunday">Minggu</option></select></div><div class="form-group"><label>Urutan (1-3)</label><input type="number" name="order" min="1" max="3" required></div><div class="form-group"><label>Teks</label><textarea name="text" rows="4" required></textarea></div><div class="form-group"><label>Referensi</label><input type="text" name="reference" required></div><div class="form-group"><label>Tipe</label><div style="display: flex; gap: 20px;"><label><input type="radio" name="type" value="quran" checked> Quran</label><label><input type="radio" name="type" value="hadith"> Hadith</label></div></div><div class="form-group"><label><input type="checkbox" name="active" checked> Aktif</label></div><div class="modal-actions"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" onclick="closeModal('wisdom-modal')" class="btn-secondary">Batal</button></div></form></div></div>
+    
+    <div class="modal" id="upload-wallpaper-modal"><div class="modal-content"><span class="close" onclick="closeModal('upload-wallpaper-modal')">&times;</span><h2>Upload Wallpaper</h2><div class="upload-area" id="wallpaper-upload-area"><input type="file" id="wallpaper-file" accept="image/*" style="display:none"><i class="fas fa-cloud-upload-alt"></i><p>Drag & drop atau klik untuk browse</p><small>Format: JPG, PNG (Max 5MB)</small></div><div id="wallpaper-preview" style="display:none"><img id="wallpaper-preview-img" alt="Preview"><p id="wallpaper-filename"></p></div><div class="form-group"><label>Urutan</label><input type="number" id="wallpaper-order" value="1" min="1"></div><div id="upload-progress" style="display:none"><div class="progress-bar"><div class="progress-fill" id="upload-progress-fill"></div></div><p id="upload-progress-text">Uploading...</p></div><div class="modal-actions"><button onclick="uploadWallpaper()" class="btn-primary" id="btn-upload-wallpaper"><i class="fas fa-upload"></i> Upload</button><button onclick="closeModal('upload-wallpaper-modal')" class="btn-secondary">Batal</button></div></div></div>
+    
+    <div class="modal" id="adab-modal"><div class="modal-content"><span class="close" onclick="closeModal('adab-modal')">&times;</span><h2 id="adab-modal-title">Tambah Adab</h2><form id="adab-form"><input type="hidden" name="id"><input type="hidden" name="type" id="adab-type"><div class="form-group"><label>Urutan</label><input type="number" name="order" min="1" max="10" required></div><div class="form-group"><label>Teks</label><textarea name="text" rows="3" required></textarea></div><div class="form-group"><label>Icon</label><select name="icon" required><option value="fas fa-door-open">🚪 Masuk Masjid</option><option value="fas fa-broom">🧹 Kebersihan</option><option value="fas fa-mobile-alt">📱 Silent HP</option><option value="fas fa-walking">🚶 Berjalan</option><option value="fas fa-hands-praying">🤲 Berdoa</option><option value="fas fa-shower">🚿 Mandi</option><option value="fas fa-tshirt">👕 Pakaian</option><option value="fas fa-clock">🕐 Waktu</option><option value="fas fa-volume-mute">🔇 Diam</option><option value="fas fa-pray">🕌 Shalat</option><option value="fas fa-book">📖 Quran</option><option value="fas fa-mosque">🕌 Masjid</option></select></div><div class="form-group"><label><input type="checkbox" name="active" checked> Aktif</label></div><div class="modal-actions"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" onclick="closeModal('adab-modal')" class="btn-secondary">Batal</button></div></form></div></div>
+    
+    <div class="modal" id="upload-announcement-modal"><div class="modal-content"><span class="close" onclick="closeModal('upload-announcement-modal')">&times;</span><h2>Upload Pengumuman</h2><div class="upload-area" id="announcement-upload-area"><input type="file" id="announcement-file" accept="image/*" style="display:none"><i class="fas fa-cloud-upload-alt"></i><p>Drag & drop atau klik</p><small>Format: JPG, PNG (Max 5MB)</small></div><div id="announcement-preview" style="display:none"><img id="announcement-preview-img" alt="Preview"><p id="announcement-filename"></p></div><div class="form-group"><label>Urutan</label><input type="number" id="announcement-order" value="1" min="1"></div><div id="announcement-upload-progress" style="display:none"><div class="progress-bar"><div class="progress-fill" id="announcement-progress-fill"></div></div><p id="announcement-progress-text">Uploading...</p></div><div class="modal-actions"><button onclick="uploadAnnouncement()" class="btn-primary" id="btn-upload-announcement"><i class="fas fa-upload"></i> Upload</button><button onclick="closeModal('upload-announcement-modal')" class="btn-secondary">Batal</button></div></div></div>
+    
+    <div class="modal" id="friday-wisdom-modal"><div class="modal-content"><span class="close" onclick="closeModal('friday-wisdom-modal')">&times;</span><h2 id="friday-wisdom-modal-title">Tambah Hadis Jumat</h2><form id="friday-wisdom-form"><input type="hidden" name="id"><div class="form-group"><label>Urutan (1-5)</label><input type="number" name="order" min="1" max="5" required></div><div class="form-group"><label>Teks Hadis</label><textarea name="text" rows="4" required></textarea></div><div class="form-group"><label>Referensi</label><input type="text" name="reference" required></div><div class="form-group"><label><input type="checkbox" name="active" checked> Aktif</label></div><div class="modal-actions"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" onclick="closeModal('friday-wisdom-modal')" class="btn-secondary">Batal</button></div></form></div></div>
 
     <script>
-        // ============================================
-        // ADMIN PANEL - 100% SINKRON DENGAN BACKEND GAS
-        // ============================================
-        // ✅ LOGIN: path=login, parameter user & pass
-        // ✅ CEK: result.data.authorized (bukan result.authorized)
-        // ✅ TIDAK ADA MOCK DATA - semua dari API
-        // ✅ CRUD: path & action sesuai backend
-        // ============================================
-
-        // STATE
-        let currentPage = 'dashboard';
-        let wisdoms = [];
-        let fridayWisdoms = [];
-        let wallpapers = [];
-        let announcements = [];
-        let fridaySchedule = {};
-        let config = {};
-
-        // ============ UTILITY ============
-        function showLoading() { document.getElementById('loading-overlay')?.classList.remove('hidden'); }
-        function hideLoading() { document.getElementById('loading-overlay')?.classList.add('hidden'); }
-        function toggleSidebar() { document.getElementById('sidebar')?.classList.toggle('-translate-x-full'); }
+        // ========================================
+        // ADMIN PANEL - VERSION FINAL
+        // 100% SINKRON DENGAN GAS
+        // ========================================
         
-        function openModal(id) { 
-            document.getElementById(id)?.classList.remove('hidden'); 
-            document.getElementById(id)?.classList.add('flex');
-        }
-        function closeModal(id) { 
-            document.getElementById(id)?.classList.add('hidden'); 
-            document.getElementById(id)?.classList.remove('flex');
-        }
-
-        function showToast(msg, type = 'success') {
-            alert(msg); // Simple fallback
-        }
-
-        // ============ FETCH API (NO MOCK) ============
-        async function fetchAPI(path, params = {}, method = 'GET', body = null) {
-            let url = `${API_URL}?path=${encodeURIComponent(path)}`;
-            for (let [key, value] of Object.entries(params)) {
-                if (value !== undefined && value !== null) {
-                    url += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-                }
+        // GANTI DENGAN URL HASIL DEPLOY GAS LO!
+        const API_URL = "https://script.google.com/macros/s/AKfycbw58v_4TKSKQb0qI2nenO_pPI6_g-LVajqWsQu63byhWGrBYQT-aAvdJy3GXv1ge_2g2A/exec";
+        
+        // Global variables
+        let wisdomsData = [];
+        let wallpapersData = [];
+        let configData = {};
+        let adabsNormalData = [];
+        let adabsFridayData = [];
+        let announcementsData = [];
+        let fridayWisdomsData = [];
+        let fridayScheduleData = {};
+        let currentAdabType = 'normal';
+        let token = sessionStorage.getItem('adminToken');
+        let username = sessionStorage.getItem('adminUser');
+        
+        // Selected files
+        let selectedWallpaperFile = null;
+        let selectedAnnouncementFile = null;
+        
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            setupUploadAreas();
+        });
+        
+        function checkAuth() {
+            if (token && username) {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('app-container').classList.add('active');
+                document.getElementById('user-display').textContent = username;
+                document.getElementById('user-name').textContent = username;
+                loadDashboard();
+            } else {
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('app-container').classList.remove('active');
             }
-            
-            const options = { method, redirect: 'follow' };
-            if (body) {
-                options.method = 'POST';
-                options.body = JSON.stringify(body);
-            }
-            
-            try {
-                const res = await fetch(url, options);
-                return await res.json();
-            } catch (e) {
-                console.error(`❌ Fetch error [${path}]:`, e);
-                return { success: false, error: e.message };
-            }
         }
-
-        // ============ LOGIN - FIXED ============
+        
+        // ========================================
+        // LOGIN
+        // ========================================
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginError = document.getElementById('login-error');
             
-            const errorEl = document.getElementById('login-error');
-            errorEl.classList.add('hidden');
+            loginError.style.display = 'none';
             
-            if (!user || !pass) {
-                errorEl.innerHTML = 'Username dan password harus diisi!';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            showLoading();
+            const btn = document.getElementById('btn-login');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
             
             try {
-                // ✅ PARAMETER: user & pass (bukan username/password)
-                const response = await fetch(`${API_URL}?path=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`);
+                const response = await fetch(`${API_URL}?path=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
                 const result = await response.json();
                 
-                // ✅ CEK: result.data.authorized (bukan langsung result.authorized)
-                if (result.success && result.data && result.data.authorized === true) {
-                    sessionStorage.setItem('adminAuth', 'true');
-                    sessionStorage.setItem('adminUser', user);
+                if (result.success) {
+                    sessionStorage.setItem('adminToken', result.data.token);
+                    sessionStorage.setItem('adminUser', username);
+                    token = result.data.token;
                     
-                    document.getElementById('login-page').classList.add('hidden');
-                    document.getElementById('app-container').classList.remove('hidden');
-                    document.getElementById('user-display').innerText = user;
-                    document.getElementById('user-name').innerText = user;
+                    showToast('Login berhasil!', 'success');
                     
-                    loadAllData();
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('app-container').classList.add('active');
+                    document.getElementById('user-display').textContent = username;
+                    document.getElementById('user-name').textContent = username;
+                    
+                    loadDashboard();
                 } else {
-                    errorEl.innerHTML = result.error || 'Username atau password salah!';
-                    errorEl.classList.remove('hidden');
+                    loginError.textContent = result.error || 'Login gagal!';
+                    loginError.style.display = 'block';
                 }
-            } catch (err) {
-                errorEl.innerHTML = 'Koneksi error: ' + err.message;
-                errorEl.classList.remove('hidden');
+            } catch (error) {
+                loginError.textContent = 'Error: ' + error.message;
+                loginError.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+            }
+        });
+        
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                sessionStorage.removeItem('adminToken');
+                sessionStorage.removeItem('adminUser');
+                token = null;
+                username = null;
+                window.location.reload();
+            }
+        }
+        
+        // ========================================
+        // UTILITY FUNCTIONS
+        // ========================================
+        function showLoading() { document.getElementById('loading-overlay').classList.add('show'); }
+        function hideLoading() { document.getElementById('loading-overlay').classList.remove('show'); }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icon = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' }[type];
+            toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+        
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        
+        function translateDay(day) {
+            const days = { monday: 'Senin', tuesday: 'Selasa', wednesday: 'Rabu', thursday: 'Kamis', friday: 'Jumat', saturday: 'Sabtu', sunday: 'Minggu' };
+            return days[day] || day;
+        }
+        
+        function previewDisplay() { window.open('display.html', '_blank'); }
+        
+        function refreshAllData() {
+            showLoading();
+            const page = document.querySelector('.page-section.active')?.id.replace('page-', '') || 'dashboard';
+            setTimeout(() => { loadPageData(page); hideLoading(); showToast('Data direfresh', 'success'); }, 500);
+        }
+        
+        async function forcePrayerUpdate() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=prayer-times&force=1`);
+                const result = await response.json();
+                if (result.success) showToast('Jadwal shalat berhasil diupdate!', 'success');
+                else showToast('Gagal: ' + result.error, 'error');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
             } finally {
                 hideLoading();
             }
-        });
-
-        function logout() {
-            sessionStorage.clear();
-            window.location.reload();
         }
-
-        // ============ LOAD ALL DATA ============
-        async function loadAllData() {
+        
+        function loadPageData(page) {
+            switch(page) {
+                case 'dashboard': loadDashboard(); break;
+                case 'config': loadConfig(); break;
+                case 'wisdoms': loadWisdoms(); break;
+                case 'wallpapers': loadWallpapers(); break;
+                case 'adabs': loadAdabs(); break;
+                case 'friday-schedule': loadFridaySchedule(); break;
+                case 'announcements': loadAnnouncements(); break;
+                case 'friday-wisdoms': loadFridayWisdoms(); break;
+            }
+        }
+        
+        function switchPage(pageName) {
+            const titles = {
+                dashboard: 'Dashboard', config: 'Konfigurasi', wisdoms: 'Konten Hikmah',
+                wallpapers: 'Wallpaper', adabs: 'Adab Islam', 'friday-schedule': 'Jadwal Jumat',
+                announcements: 'Pengumuman Jumat', 'friday-wisdoms': 'Hadis Jumat'
+            };
+            
+            document.getElementById('page-title').textContent = titles[pageName];
+            
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('page-' + pageName).classList.add('active');
+            
+            document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+            document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+            
+            loadPageData(pageName);
+            
+            if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        }
+        
+        // ========================================
+        // DASHBOARD
+        // ========================================
+        async function loadDashboard() {
             showLoading();
-            document.getElementById('api-status').innerHTML = 'Mengambil data...';
-            
-            // Load semua data independen (gagal satu tidak pengaruh lainnya)
-            await Promise.allSettled([
-                loadConfig(),
-                loadWisdoms(),
-                loadFridayWisdoms(),
-                loadWallpapers(),
-                loadFridaySchedule(),
-                loadAnnouncements()
-            ]);
-            
-            document.getElementById('api-status').innerHTML = '✓ Terhubung ke API';
-            hideLoading();
+            try {
+                const configRes = await fetch(`${API_URL}?path=config`);
+                const configResult = await configRes.json();
+                if (configResult.success) {
+                    configData = configResult.data;
+                    document.getElementById('masjid-name-display').textContent = configData.masjid_name || 'N/A';
+                    document.getElementById('info-masjid-name').textContent = configData.masjid_name || '-';
+                    document.getElementById('info-masjid-address').textContent = configData.masjid_address || '-';
+                }
+                
+                const wisdomsRes = await fetch(`${API_URL}?path=wisdoms`);
+                const wisdomsResult = await wisdomsRes.json();
+                if (wisdomsResult.success) document.getElementById('total-wisdoms').textContent = wisdomsResult.data.length;
+                
+                const wallpapersRes = await fetch(`${API_URL}?path=wallpapers`);
+                const wallpapersResult = await wallpapersRes.json();
+                if (wallpapersResult.success) {
+                    const active = wallpapersResult.data.filter(w => w.active);
+                    document.getElementById('total-wallpapers').textContent = active.length;
+                }
+                
+                document.getElementById('last-sync-time').textContent = new Date().toLocaleString('id-ID');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
         }
-
-        // ============ CONFIG ============
+        
+        // ========================================
+        // CONFIG
+        // ========================================
         async function loadConfig() {
-            const result = await fetchAPI('config');
-            if (result.success && result.data) {
-                config = result.data;
-                
-                // Isi form config
-                const form = document.getElementById('config-form');
-                if (form) {
-                    const inputs = form.querySelectorAll('input[name]');
-                    inputs.forEach(input => {
-                        const val = config[input.name];
-                        if (val !== undefined) input.value = val;
-                    });
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=config`);
+                const result = await response.json();
+                if (result.success) {
+                    configData = result.data;
+                    const form = document.getElementById('config-form');
+                    for (const key in configData) {
+                        const input = form.querySelector(`[name="${key}"]`);
+                        if (input) input.value = configData[key];
+                    }
                 }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
             }
         }
-
-        // ============ WISDOMS ============
-        async function loadWisdoms() {
-            const result = await fetchAPI('wisdoms');
-            if (result.success && Array.isArray(result.data)) {
-                wisdoms = result.data;
-                renderWisdoms();
-            } else {
-                document.getElementById('wisdoms-tbody').innerHTML = '<tr><td colspan="4" class="text-center p-4 text-red-500">Gagal memuat data</td></tr>';
+        
+        document.getElementById('config-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            document.getElementById('error-latitude').textContent = '';
+            document.getElementById('error-longitude').textContent = '';
+            
+            const formData = new FormData(this);
+            const config = Object.fromEntries(formData);
+            
+            const lat = parseFloat(config.latitude);
+            const lng = parseFloat(config.longitude);
+            let hasError = false;
+            
+            if (isNaN(lat) || lat < -90 || lat > 90) {
+                document.getElementById('error-latitude').textContent = 'Latitude harus -90 s/d 90';
+                hasError = true;
             }
-        }
-
-        function renderWisdoms() {
-            const tbody = document.getElementById('wisdoms-tbody');
-            if (!tbody) return;
-            
-            if (!wisdoms.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4">Tidak ada data</td></tr>';
-                return;
+            if (isNaN(lng) || lng < -180 || lng > 180) {
+                document.getElementById('error-longitude').textContent = 'Longitude harus -180 s/d 180';
+                hasError = true;
             }
+            if (hasError) return;
             
-            const dayNames = { monday: 'Senin', tuesday: 'Selasa', wednesday: 'Rabu', thursday: 'Kamis', friday: 'Jumat', saturday: 'Sabtu', sunday: 'Minggu' };
-            
-            tbody.innerHTML = wisdoms.map(w => `
-                <tr class="border-b">
-                    <td class="p-3">${dayNames[w.day] || w.day}</td>
-                    <td class="p-3">${w.text?.substring(0, 50)}${w.text?.length > 50 ? '...' : ''}</td>
-                    <td class="p-3">${w.reference || '-'}</td>
-                    <td class="p-3">
-                        <button onclick="deleteWisdom('${w.id}')" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function deleteWisdom(id) {
-            if (!confirm('Hapus item ini?')) return;
+            const btn = document.getElementById('btn-save-config');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
             showLoading();
-            const result = await fetchAPI('wisdoms', { action: 'delete' }, 'POST', { id });
-            if (result.success) {
-                showToast('Berhasil dihapus');
-                loadWisdoms();
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            hideLoading();
-        }
-
-        // ============ FRIDAY WISDOMS ============
-        async function loadFridayWisdoms() {
-            const result = await fetchAPI('friday-wisdom'); // PATH SESUAI BACKEND
-            if (result.success && Array.isArray(result.data)) {
-                fridayWisdoms = result.data.sort((a,b) => (a.order || 0) - (b.order || 0));
-                renderFridayWisdoms();
-            } else {
-                document.getElementById('friday-wisdoms-tbody').innerHTML = '<tr><td colspan="4" class="text-center p-4 text-red-500">Gagal memuat data</td></tr>';
-            }
-        }
-
-        function renderFridayWisdoms() {
-            const tbody = document.getElementById('friday-wisdoms-tbody');
-            if (!tbody) return;
             
-            if (!fridayWisdoms.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4">Tidak ada data</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = fridayWisdoms.map(w => `
-                <tr class="border-b">
-                    <td class="p-3">${w.order || '-'}</td>
-                    <td class="p-3">${w.text?.substring(0, 50)}${w.text?.length > 50 ? '...' : ''}</td>
-                    <td class="p-3">${w.reference || '-'}</td>
-                    <td class="p-3">
-                        <button onclick="deleteFridayWisdom('${w.id}')" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function deleteFridayWisdom(id) {
-            if (!confirm('Hapus item ini?')) return;
-            showLoading();
-            const result = await fetchAPI('friday-wisdom', { action: 'delete' }, 'POST', { id });
-            if (result.success) {
-                showToast('Berhasil dihapus');
-                loadFridayWisdoms();
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            hideLoading();
-        }
-
-        // ============ WALLPAPERS ============
-        async function loadWallpapers() {
-            const result = await fetchAPI('wallpapers');
-            if (result.success && Array.isArray(result.data)) {
-                wallpapers = result.data.filter(w => w.active !== false).sort((a,b) => (a.order || 0) - (b.order || 0));
-                renderWallpapers();
-            } else {
-                document.getElementById('wallpapers-grid').innerHTML = '<p class="text-red-500">Gagal memuat data</p>';
-            }
-        }
-
-        function renderWallpapers() {
-            const grid = document.getElementById('wallpapers-grid');
-            if (!grid) return;
-            
-            if (!wallpapers.length) {
-                grid.innerHTML = '<p class="text-gray-500">Belum ada wallpaper</p>';
-                return;
-            }
-            
-            grid.innerHTML = wallpapers.map(w => `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <img src="${w.image_url}" class="w-full h-40 object-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3EError%3C/text%3E%3C/svg%3E'">
-                    <div class="p-3 flex justify-between items-center">
-                        <span class="text-sm">Urutan: ${w.order || '-'}</span>
-                        <button onclick="deleteWallpaper('${w.id}')" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function deleteWallpaper(id) {
-            if (!confirm('Hapus wallpaper ini?')) return;
-            showLoading();
-            const result = await fetchAPI('wallpapers', { action: 'delete' }, 'POST', { id });
-            if (result.success) {
-                showToast('Berhasil dihapus');
-                loadWallpapers();
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            hideLoading();
-        }
-
-        // ============ FRIDAY SCHEDULE ============
-        async function loadFridaySchedule() {
-            const result = await fetchAPI('friday-schedule');
-            if (result.success && result.data) {
-                fridaySchedule = result.data;
-                
-                const form = document.getElementById('friday-schedule-form');
-                if (form) {
-                    form.querySelector('[name="khutbah_time"]').value = fridaySchedule.khutbah_time || '';
-                    form.querySelector('[name="iqamah_time"]').value = fridaySchedule.iqamah_time || '';
-                    form.querySelector('[name="imam_name"]').value = fridaySchedule.imam_name || '';
-                    form.querySelector('[name="khatib_name"]').value = fridaySchedule.khatib_name || '';
+            try {
+                const response = await fetch(`${API_URL}?path=config&action=update-multiple`, {
+                    method: 'POST',
+                    body: JSON.stringify(config)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Konfigurasi disimpan!', 'success');
+                    configData = config;
+                } else {
+                    showToast('Gagal: ' + result.error, 'error');
                 }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Simpan Konfigurasi';
+                hideLoading();
             }
-        }
-
-        // ============ ANNOUNCEMENTS ============
-        async function loadAnnouncements() {
-            const result = await fetchAPI('announcements');
-            if (result.success && Array.isArray(result.data)) {
-                announcements = result.data.filter(a => a.active !== false).sort((a,b) => (a.order || 0) - (b.order || 0));
-                renderAnnouncements();
-            }
-        }
-
-        function renderAnnouncements() {
-            const grid = document.getElementById('announcements-grid');
-            if (!grid) return;
-            
-            if (!announcements.length) {
-                grid.innerHTML = '<p class="text-gray-500">Belum ada pengumuman</p>';
-                return;
-            }
-            
-            grid.innerHTML = announcements.map(a => `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <img src="${a.image_url}" class="w-full h-40 object-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\'%3E%3Crect width=\'400\' height=\'200\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3EError%3C/text%3E%3C/svg%3E'">
-                    <div class="p-3 flex justify-between items-center">
-                        <span class="text-sm">Urutan: ${a.order || '-'}</span>
-                        <button onclick="deleteAnnouncement('${a.id}')" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function deleteAnnouncement(id) {
-            if (!confirm('Hapus pengumuman ini?')) return;
-            showLoading();
-            const result = await fetchAPI('announcements', { action: 'delete' }, 'POST', { id });
-            if (result.success) {
-                showToast('Berhasil dihapus');
-                loadAnnouncements();
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            hideLoading();
-        }
-
-        // ============ WALLPAPER UPLOAD ============
-        document.getElementById('wallpaper-upload-area').addEventListener('click', () => {
-            document.getElementById('wallpaper-file').click();
         });
-
-        document.getElementById('wallpaper-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
+        
+        // ========================================
+        // WISDOMS
+        // ========================================
+        async function loadWisdoms() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=wisdoms`);
+                const result = await response.json();
+                if (result.success) {
+                    wisdomsData = result.data;
+                    renderWisdomsTable();
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function renderWisdomsTable(filterDay = '') {
+            const tbody = document.getElementById('wisdoms-tbody');
+            let filtered = filterDay ? wisdomsData.filter(w => w.day === filterDay) : wisdomsData;
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Tidak ada data</td></tr>';
+                return;
+            }
+            
+            filtered.sort((a, b) => a.order - b.order);
+            
+            tbody.innerHTML = filtered.map(w => `
+                <tr>
+                    <td>${translateDay(w.day)}</td>
+                    <td>${w.order}</td>
+                    <td class="text-truncate" title="${w.text}">${w.text}</td>
+                    <td>${w.reference}</td>
+                    <td><span class="badge badge-${w.type}">${w.type === 'quran' ? 'Quran' : 'Hadith'}</span></td>
+                    <td><label class="switch"><input type="checkbox" ${w.active ? 'checked' : ''} onchange="toggleWisdomStatus(${w.id}, this.checked)"><span class="slider"></span></label></td>
+                    <td><button onclick="editWisdom(${w.id})" class="btn-icon"><i class="fas fa-edit"></i></button><button onclick="deleteWisdom(${w.id})" class="btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterWisdoms() {
+            const filterDay = document.getElementById('filter-day').value;
+            renderWisdomsTable(filterDay);
+        }
+        
+        function showAddWisdomModal() {
+            document.getElementById('wisdom-modal-title').textContent = 'Tambah Hikmah';
+            document.getElementById('wisdom-form').reset();
+            document.querySelector('[name="id"]').value = '';
+            openModal('wisdom-modal');
+        }
+        
+        function editWisdom(id) {
+            const wisdom = wisdomsData.find(w => w.id == id);
+            if (!wisdom) return;
+            
+            document.getElementById('wisdom-modal-title').textContent = 'Edit Hikmah';
+            const form = document.getElementById('wisdom-form');
+            form.querySelector('[name="id"]').value = wisdom.id;
+            form.querySelector('[name="day"]').value = wisdom.day;
+            form.querySelector('[name="order"]').value = wisdom.order;
+            form.querySelector('[name="text"]').value = wisdom.text;
+            form.querySelector('[name="reference"]').value = wisdom.reference;
+            form.querySelector(`[name="type"][value="${wisdom.type}"]`).checked = true;
+            form.querySelector('[name="active"]').checked = wisdom.active;
+            
+            openModal('wisdom-modal');
+        }
+        
+        document.getElementById('wisdom-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const wisdom = {
+                id: formData.get('id') || undefined,
+                day: formData.get('day'),
+                order: parseInt(formData.get('order')),
+                text: formData.get('text'),
+                reference: formData.get('reference'),
+                type: formData.get('type'),
+                active: formData.get('active') === 'on'
+            };
+            
+            const action = wisdom.id ? 'update' : 'add';
+            const btn = document.querySelector('#wisdom-modal .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_URL}?path=wisdom&action=${action}`, {
+                    method: 'POST',
+                    body: JSON.stringify(wisdom)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast(`Hikmah berhasil ${action === 'add' ? 'ditambahkan' : 'diupdate'}!`, 'success');
+                    closeModal('wisdom-modal');
+                    loadWisdoms();
+                } else {
+                    showToast('Gagal: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                hideLoading();
+            }
+        });
+        
+        async function toggleWisdomStatus(id, active) {
+            const wisdom = wisdomsData.find(w => w.id == id);
+            if (!wisdom) return;
+            
+            wisdom.active = active;
+            
+            try {
+                await fetch(`${API_URL}?path=wisdom&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(wisdom)
+                });
+                showToast('Status berhasil diubah', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                loadWisdoms();
+            }
+        }
+        
+        async function deleteWisdom(id) {
+            if (!confirm('Yakin ingin menghapus?')) return;
+            
+            showLoading();
+            try {
+                await fetch(`${API_URL}?path=wisdom&action=delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id })
+                });
+                showToast('Hikmah dihapus!', 'success');
+                loadWisdoms();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // ========================================
+        // WALLPAPERS
+        // ========================================
+        async function loadWallpapers() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=wallpapers`);
+                const result = await response.json();
+                if (result.success) {
+                    wallpapersData = result.data;
+                    renderWallpapersGrid();
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function renderWallpapersGrid() {
+            const grid = document.getElementById('wallpapers-grid');
+            if (wallpapersData.length === 0) {
+                grid.innerHTML = '<p>Belum ada wallpaper. Upload sekarang!</p>';
+                return;
+            }
+            
+            wallpapersData.sort((a, b) => a.order - b.order);
+            
+            grid.innerHTML = wallpapersData.map(w => `
+                <div class="image-card">
+                    <img src="${w.image_url}" alt="Wallpaper" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/><text fill=%22%23999%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22>Error</text></svg>'">
+                    <div class="image-card-info">
+                        <div class="image-card-order">
+                            <label>Urutan:</label>
+                            <input type="number" value="${w.order}" onchange="updateWallpaperOrder(${w.id}, this.value)">
+                        </div>
+                        <label class="switch"><input type="checkbox" ${w.active ? 'checked' : ''} onchange="toggleWallpaperStatus(${w.id}, this.checked)"><span class="slider"></span></label>
+                        <button onclick="deleteWallpaper(${w.id})" class="btn-icon btn-danger"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function showUploadWallpaperModal() {
+            selectedWallpaperFile = null;
+            document.getElementById('wallpaper-preview').style.display = 'none';
+            document.getElementById('wallpaper-upload-area').style.display = 'block';
+            document.getElementById('upload-progress').style.display = 'none';
+            document.getElementById('wallpaper-order').value = wallpapersData.length + 1;
+            openModal('upload-wallpaper-modal');
+        }
+        
+        function setupUploadAreas() {
+            // Wallpaper upload area
+            const wallpaperArea = document.getElementById('wallpaper-upload-area');
+            wallpaperArea.addEventListener('click', () => document.getElementById('wallpaper-file').click());
+            wallpaperArea.addEventListener('dragover', (e) => e.preventDefault());
+            wallpaperArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                wallpaperArea.classList.remove('drag-over');
+                handleWallpaperFile(e.dataTransfer.files[0]);
+            });
+            
+            document.getElementById('wallpaper-file').addEventListener('change', (e) => {
+                handleWallpaperFile(e.target.files[0]);
+            });
+            
+            // Announcement upload area
+            const announcementArea = document.getElementById('announcement-upload-area');
+            announcementArea.addEventListener('click', () => document.getElementById('announcement-file').click());
+            announcementArea.addEventListener('dragover', (e) => e.preventDefault());
+            announcementArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                announcementArea.classList.remove('drag-over');
+                handleAnnouncementFile(e.dataTransfer.files[0]);
+            });
+            
+            document.getElementById('announcement-file').addEventListener('change', (e) => {
+                handleAnnouncementFile(e.target.files[0]);
+            });
+        }
+        
+        function handleWallpaperFile(file) {
             if (!file) return;
+            if (!file.type.match('image.*')) {
+                showToast('Format harus gambar!', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('File maksimal 5MB!', 'error');
+                return;
+            }
+            
+            selectedWallpaperFile = file;
             
             const reader = new FileReader();
             reader.onload = (e) => {
                 document.getElementById('wallpaper-preview-img').src = e.target.result;
-                document.getElementById('wallpaper-filename').innerText = file.name;
-                document.getElementById('wallpaper-preview').classList.remove('hidden');
-                document.getElementById('wallpaper-upload-area').classList.add('hidden');
+                document.getElementById('wallpaper-filename').textContent = file.name;
+                document.getElementById('wallpaper-upload-area').style.display = 'none';
+                document.getElementById('wallpaper-preview').style.display = 'block';
             };
             reader.readAsDataURL(file);
-        });
-
+        }
+        
         async function uploadWallpaper() {
-            const file = document.getElementById('wallpaper-file').files[0];
-            if (!file) {
-                alert('Pilih file dulu!');
+            if (!selectedWallpaperFile) {
+                showToast('Pilih file dulu!', 'error');
                 return;
             }
             
             const order = document.getElementById('wallpaper-order').value;
             
-            showLoading();
-            document.getElementById('upload-progress').classList.remove('hidden');
-            document.getElementById('upload-progress-fill').style.width = '0%';
-            document.getElementById('upload-progress-text').innerText = 'Mengkonversi...';
+            document.getElementById('upload-progress').style.display = 'block';
+            const btn = document.getElementById('btn-upload-wallpaper');
+            btn.disabled = true;
+            const progressFill = document.getElementById('upload-progress-fill');
+            const progressText = document.getElementById('upload-progress-text');
+            
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Memulai upload...';
             
             try {
-                // Konversi ke base64
-                const base64 = await fileToBase64(file);
-                document.getElementById('upload-progress-fill').style.width = '30%';
-                document.getElementById('upload-progress-text').innerText = 'Mengupload...';
+                // Step 1: Resize (20%)
+                progressText.textContent = 'Memproses gambar (20%)...';
+                progressFill.style.width = '20%';
                 
-                // Upload ke backend
-                const uploadResult = await fetchAPI('upload', { action: 'upload' }, 'POST', {
-                    fileName: file.name,
-                    fileData: base64,
-                    fileType: file.type
+                const resizedFile = await resizeImage(selectedWallpaperFile, 1920, 1080);
+                
+                // Step 2: Convert to base64 (40%)
+                progressText.textContent = 'Mengkonversi (40%)...';
+                progressFill.style.width = '40%';
+                
+                const base64 = await fileToBase64(resizedFile);
+                
+                // Step 3: Upload (60%)
+                progressText.textContent = 'Mengupload ke Drive (60%)...';
+                progressFill.style.width = '60%';
+                
+                const uploadResponse = await fetch(`${API_URL}?path=upload`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        fileName: selectedWallpaperFile.name,
+                        fileData: base64,
+                        folder: 'wallpapers'
+                    })
                 });
                 
-                document.getElementById('upload-progress-fill').style.width = '70%';
-                document.getElementById('upload-progress-text').innerText = 'Menyimpan...';
-                
+                const uploadResult = await uploadResponse.json();
                 if (!uploadResult.success) throw new Error(uploadResult.error);
                 
-                // Simpan ke database wallpapers
-                const saveResult = await fetchAPI('wallpapers', { action: 'add' }, 'POST', {
-                    order: parseInt(order),
-                    image_url: uploadResult.url,
-                    active: true
+                // Step 4: Save to database (80%)
+                progressText.textContent = 'Menyimpan ke database (80%)...';
+                progressFill.style.width = '80%';
+                
+                const saveResponse = await fetch(`${API_URL}?path=wallpaper&action=add`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        order: parseInt(order),
+                        image_url: uploadResult.data.url,
+                        drive_file_id: uploadResult.data.fileId,
+                        active: true
+                    })
                 });
                 
-                if (saveResult.success) {
-                    document.getElementById('upload-progress-fill').style.width = '100%';
-                    document.getElementById('upload-progress-text').innerText = 'Selesai!';
-                    
-                    setTimeout(() => {
-                        closeModal('upload-wallpaper-modal');
-                        loadWallpapers();
-                    }, 1000);
-                } else {
-                    throw new Error(saveResult.error);
-                }
-            } catch (err) {
-                alert('Upload gagal: ' + err.message);
-                document.getElementById('upload-progress').classList.add('hidden');
+                const saveResult = await saveResponse.json();
+                if (!saveResult.success) throw new Error(saveResult.error);
+                
+                // Step 5: Selesai (100%)
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Selesai!';
+                
+                showToast('Wallpaper berhasil diupload!', 'success');
+                
+                setTimeout(() => {
+                    closeModal('upload-wallpaper-modal');
+                    loadWallpapers();
+                }, 1000);
+                
+            } catch (error) {
+                showToast('Upload gagal: ' + error.message, 'error');
+                progressFill.style.width = '0%';
+            } finally {
+                btn.disabled = false;
+                document.getElementById('upload-progress').style.display = 'none';
+            }
+        }
+        
+        async function updateWallpaperOrder(id, newOrder) {
+            const wallpaper = wallpapersData.find(w => w.id == id);
+            if (!wallpaper) return;
+            
+            wallpaper.order = parseInt(newOrder);
+            
+            try {
+                await fetch(`${API_URL}?path=wallpaper&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(wallpaper)
+                });
+                showToast('Urutan diubah', 'success');
+                loadWallpapers();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function toggleWallpaperStatus(id, active) {
+            const wallpaper = wallpapersData.find(w => w.id == id);
+            if (!wallpaper) return;
+            
+            wallpaper.active = active;
+            
+            try {
+                await fetch(`${API_URL}?path=wallpaper&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(wallpaper)
+                });
+                showToast('Status diubah', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                loadWallpapers();
+            }
+        }
+        
+        async function deleteWallpaper(id) {
+            if (!confirm('Yakin ingin menghapus?')) return;
+            
+            showLoading();
+            try {
+                await fetch(`${API_URL}?path=wallpaper&action=delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id })
+                });
+                showToast('Wallpaper dihapus!', 'success');
+                loadWallpapers();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
             } finally {
                 hideLoading();
             }
         }
-
+        
+        // ========================================
+        // ADABS
+        // ========================================
+        async function loadAdabs() {
+            showLoading();
+            try {
+                await Promise.all([loadAdabsByType('normal'), loadAdabsByType('friday')]);
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function loadAdabsByType(type) {
+            const response = await fetch(`${API_URL}?path=adabs&type=${type}`);
+            const result = await response.json();
+            if (result.success) {
+                if (type === 'normal') {
+                    adabsNormalData = result.data;
+                    renderAdabsTable('normal');
+                } else {
+                    adabsFridayData = result.data;
+                    renderAdabsTable('friday');
+                }
+            }
+        }
+        
+        function renderAdabsTable(type) {
+            const tbody = document.getElementById(`adabs-${type}-tbody`);
+            const data = type === 'normal' ? adabsNormalData : adabsFridayData;
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada data</td></tr>';
+                return;
+            }
+            
+            data.sort((a, b) => a.order - b.order);
+            
+            tbody.innerHTML = data.map(a => `
+                <tr>
+                    <td>${a.order}</td>
+                    <td>${a.text}</td>
+                    <td><i class="${a.icon}"></i> ${a.icon}</td>
+                    <td><label class="switch"><input type="checkbox" ${a.active ? 'checked' : ''} onchange="toggleAdabStatus(${a.id}, this.checked, '${type}')"><span class="slider"></span></label></td>
+                    <td><button onclick="editAdab(${a.id}, '${type}')" class="btn-icon"><i class="fas fa-edit"></i></button><button onclick="deleteAdab(${a.id}, '${type}')" class="btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function switchAdabTab(event, type) {
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`tab-adab-${type}`).classList.add('active');
+            
+            currentAdabType = type;
+        }
+        
+        function showAddAdabModal(type) {
+            currentAdabType = type;
+            document.getElementById('adab-modal-title').textContent = `Tambah Adab ${type === 'normal' ? 'Normal' : 'Jumat'}`;
+            document.getElementById('adab-form').reset();
+            document.querySelector('[name="id"]').value = '';
+            document.getElementById('adab-type').value = type;
+            openModal('adab-modal');
+        }
+        
+        function editAdab(id, type) {
+            const data = type === 'normal' ? adabsNormalData : adabsFridayData;
+            const adab = data.find(a => a.id == id);
+            if (!adab) return;
+            
+            currentAdabType = type;
+            document.getElementById('adab-modal-title').textContent = `Edit Adab ${type === 'normal' ? 'Normal' : 'Jumat'}`;
+            const form = document.getElementById('adab-form');
+            form.querySelector('[name="id"]').value = adab.id;
+            form.querySelector('[name="order"]').value = adab.order;
+            form.querySelector('[name="text"]').value = adab.text;
+            form.querySelector('[name="icon"]').value = adab.icon;
+            form.querySelector('[name="active"]').checked = adab.active;
+            document.getElementById('adab-type').value = type;
+            
+            openModal('adab-modal');
+        }
+        
+        document.getElementById('adab-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const adab = {
+                id: formData.get('id') || undefined,
+                type: formData.get('type'),
+                order: parseInt(formData.get('order')),
+                text: formData.get('text'),
+                icon: formData.get('icon'),
+                active: formData.get('active') === 'on'
+            };
+            
+            const action = adab.id ? 'update' : 'add';
+            const btn = document.querySelector('#adab-modal .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_URL}?path=adab&action=${action}`, {
+                    method: 'POST',
+                    body: JSON.stringify(adab)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast(`Adab berhasil ${action === 'add' ? 'ditambahkan' : 'diupdate'}!`, 'success');
+                    closeModal('adab-modal');
+                    loadAdabsByType(adab.type);
+                } else {
+                    showToast('Gagal: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                hideLoading();
+            }
+        });
+        
+        async function toggleAdabStatus(id, active, type) {
+            const data = type === 'normal' ? adabsNormalData : adabsFridayData;
+            const adab = data.find(a => a.id == id);
+            if (!adab) return;
+            
+            adab.active = active;
+            
+            try {
+                await fetch(`${API_URL}?path=adab&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(adab)
+                });
+                showToast('Status diubah', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                loadAdabsByType(type);
+            }
+        }
+        
+        async function deleteAdab(id, type) {
+            if (!confirm('Yakin ingin menghapus?')) return;
+            
+            showLoading();
+            try {
+                await fetch(`${API_URL}?path=adab&action=delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id, type })
+                });
+                showToast('Adab dihapus!', 'success');
+                loadAdabsByType(type);
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // ========================================
+        // FRIDAY SCHEDULE
+        // ========================================
+        async function loadFridaySchedule() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=friday-schedule`);
+                const result = await response.json();
+                if (result.success) {
+                    fridayScheduleData = result.data;
+                    const form = document.getElementById('friday-schedule-form');
+                    form.querySelector('[name="khutbah_time"]').value = result.data.khutbah_time || '';
+                    form.querySelector('[name="iqamah_time"]').value = result.data.iqamah_time || '';
+                    form.querySelector('[name="imam_name"]').value = result.data.imam_name || '';
+                    form.querySelector('[name="khatib_name"]').value = result.data.khatib_name || '';
+                    form.querySelector('[name="muadzin1_name"]').value = result.data.muadzin1_name || '';
+                    form.querySelector('[name="muadzin2_name"]').value = result.data.muadzin2_name || '';
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        document.getElementById('friday-schedule-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const schedule = Object.fromEntries(formData);
+            
+            const btn = document.getElementById('btn-save-friday-schedule');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_URL}?path=friday-schedule&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(schedule)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Jadwal Jumat disimpan!', 'success');
+                } else {
+                    showToast('Gagal: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+                hideLoading();
+            }
+        });
+        
+        // ========================================
+        // ANNOUNCEMENTS
+        // ========================================
+        async function loadAnnouncements() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=announcements`);
+                const result = await response.json();
+                if (result.success) {
+                    announcementsData = result.data;
+                    renderAnnouncementsGrid();
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function renderAnnouncementsGrid() {
+            const grid = document.getElementById('announcements-grid');
+            if (announcementsData.length === 0) {
+                grid.innerHTML = '<p>Belum ada pengumuman. Upload sekarang!</p>';
+                return;
+            }
+            
+            announcementsData.sort((a, b) => a.order - b.order);
+            
+            grid.innerHTML = announcementsData.map(a => `
+                <div class="image-card">
+                    <img src="${a.image_url}" alt="Pengumuman" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/><text fill=%22%23999%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22>Error</text></svg>'">
+                    <div class="image-card-info">
+                        <div class="image-card-order">
+                            <label>Urutan:</label>
+                            <input type="number" value="${a.order}" onchange="updateAnnouncementOrder(${a.id}, this.value)">
+                        </div>
+                        <label class="switch"><input type="checkbox" ${a.active ? 'checked' : ''} onchange="toggleAnnouncementStatus(${a.id}, this.checked)"><span class="slider"></span></label>
+                        <button onclick="deleteAnnouncement(${a.id})" class="btn-icon btn-danger"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function showUploadAnnouncementModal() {
+            selectedAnnouncementFile = null;
+            document.getElementById('announcement-preview').style.display = 'none';
+            document.getElementById('announcement-upload-area').style.display = 'block';
+            document.getElementById('announcement-upload-progress').style.display = 'none';
+            document.getElementById('announcement-order').value = announcementsData.length + 1;
+            openModal('upload-announcement-modal');
+        }
+        
+        function handleAnnouncementFile(file) {
+            if (!file) return;
+            if (!file.type.match('image.*')) {
+                showToast('Format harus gambar!', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('File maksimal 5MB!', 'error');
+                return;
+            }
+            
+            selectedAnnouncementFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('announcement-preview-img').src = e.target.result;
+                document.getElementById('announcement-filename').textContent = file.name;
+                document.getElementById('announcement-upload-area').style.display = 'none';
+                document.getElementById('announcement-preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        async function uploadAnnouncement() {
+            if (!selectedAnnouncementFile) {
+                showToast('Pilih file dulu!', 'error');
+                return;
+            }
+            
+            const order = document.getElementById('announcement-order').value;
+            
+            document.getElementById('announcement-upload-progress').style.display = 'block';
+            const btn = document.getElementById('btn-upload-announcement');
+            btn.disabled = true;
+            const progressFill = document.getElementById('announcement-progress-fill');
+            const progressText = document.getElementById('announcement-progress-text');
+            
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Memulai upload...';
+            
+            try {
+                // Step 1: Resize
+                progressText.textContent = 'Memproses gambar (20%)...';
+                progressFill.style.width = '20%';
+                
+                const resizedFile = await resizeImage(selectedAnnouncementFile, 1920, 1080);
+                
+                // Step 2: Convert
+                progressText.textContent = 'Mengkonversi (40%)...';
+                progressFill.style.width = '40%';
+                
+                const base64 = await fileToBase64(resizedFile);
+                
+                // Step 3: Upload
+                progressText.textContent = 'Mengupload ke Drive (60%)...';
+                progressFill.style.width = '60%';
+                
+                const uploadResponse = await fetch(`${API_URL}?path=upload`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        fileName: selectedAnnouncementFile.name,
+                        fileData: base64,
+                        folder: 'announcements'
+                    })
+                });
+                
+                const uploadResult = await uploadResponse.json();
+                if (!uploadResult.success) throw new Error(uploadResult.error);
+                
+                // Step 4: Save
+                progressText.textContent = 'Menyimpan ke database (80%)...';
+                progressFill.style.width = '80%';
+                
+                const saveResponse = await fetch(`${API_URL}?path=announcement&action=add`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        order: parseInt(order),
+                        text: '',
+                        image_url: uploadResult.data.url,
+                        drive_file_id: uploadResult.data.fileId,
+                        active: true
+                    })
+                });
+                
+                const saveResult = await saveResponse.json();
+                if (!saveResult.success) throw new Error(saveResult.error);
+                
+                // Step 5: Selesai
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Selesai!';
+                
+                showToast('Pengumuman berhasil diupload!', 'success');
+                
+                setTimeout(() => {
+                    closeModal('upload-announcement-modal');
+                    loadAnnouncements();
+                }, 1000);
+                
+            } catch (error) {
+                showToast('Upload gagal: ' + error.message, 'error');
+                progressFill.style.width = '0%';
+            } finally {
+                btn.disabled = false;
+                document.getElementById('announcement-upload-progress').style.display = 'none';
+            }
+        }
+        
+        async function updateAnnouncementOrder(id, newOrder) {
+            const announcement = announcementsData.find(a => a.id == id);
+            if (!announcement) return;
+            
+            announcement.order = parseInt(newOrder);
+            
+            try {
+                await fetch(`${API_URL}?path=announcement&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(announcement)
+                });
+                showToast('Urutan diubah', 'success');
+                loadAnnouncements();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function toggleAnnouncementStatus(id, active) {
+            const announcement = announcementsData.find(a => a.id == id);
+            if (!announcement) return;
+            
+            announcement.active = active;
+            
+            try {
+                await fetch(`${API_URL}?path=announcement&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(announcement)
+                });
+                showToast('Status diubah', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                loadAnnouncements();
+            }
+        }
+        
+        async function deleteAnnouncement(id) {
+            if (!confirm('Yakin ingin menghapus?')) return;
+            
+            showLoading();
+            try {
+                await fetch(`${API_URL}?path=announcement&action=delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id })
+                });
+                showToast('Pengumuman dihapus!', 'success');
+                loadAnnouncements();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // ========================================
+        // FRIDAY WISDOMS
+        // ========================================
+        async function loadFridayWisdoms() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}?path=friday-wisdoms`);
+                const result = await response.json();
+                if (result.success) {
+                    fridayWisdomsData = result.data;
+                    renderFridayWisdomsTable();
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function renderFridayWisdomsTable() {
+            const tbody = document.getElementById('friday-wisdoms-tbody');
+            if (fridayWisdomsData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada data</td></tr>';
+                return;
+            }
+            
+            fridayWisdomsData.sort((a, b) => a.order - b.order);
+            
+            tbody.innerHTML = fridayWisdomsData.map(w => `
+                <tr>
+                    <td>${w.order}</td>
+                    <td class="text-truncate" title="${w.text}">${w.text}</td>
+                    <td>${w.reference}</td>
+                    <td><label class="switch"><input type="checkbox" ${w.active ? 'checked' : ''} onchange="toggleFridayWisdomStatus(${w.id}, this.checked)"><span class="slider"></span></label></td>
+                    <td><button onclick="editFridayWisdom(${w.id})" class="btn-icon"><i class="fas fa-edit"></i></button><button onclick="deleteFridayWisdom(${w.id})" class="btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function showAddFridayWisdomModal() {
+            document.getElementById('friday-wisdom-modal-title').textContent = 'Tambah Hadis Jumat';
+            document.getElementById('friday-wisdom-form').reset();
+            document.querySelector('#friday-wisdom-form [name="id"]').value = '';
+            openModal('friday-wisdom-modal');
+        }
+        
+        function editFridayWisdom(id) {
+            const wisdom = fridayWisdomsData.find(w => w.id == id);
+            if (!wisdom) return;
+            
+            document.getElementById('friday-wisdom-modal-title').textContent = 'Edit Hadis Jumat';
+            const form = document.getElementById('friday-wisdom-form');
+            form.querySelector('[name="id"]').value = wisdom.id;
+            form.querySelector('[name="order"]').value = wisdom.order;
+            form.querySelector('[name="text"]').value = wisdom.text;
+            form.querySelector('[name="reference"]').value = wisdom.reference;
+            form.querySelector('[name="active"]').checked = wisdom.active;
+            
+            openModal('friday-wisdom-modal');
+        }
+        
+        document.getElementById('friday-wisdom-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const wisdom = {
+                id: formData.get('id') || undefined,
+                order: parseInt(formData.get('order')),
+                text: formData.get('text'),
+                reference: formData.get('reference'),
+                active: formData.get('active') === 'on'
+            };
+            
+            const action = wisdom.id ? 'update' : 'add';
+            const btn = document.querySelector('#friday-wisdom-modal .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_URL}?path=friday-wisdom&action=${action}`, {
+                    method: 'POST',
+                    body: JSON.stringify(wisdom)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast(`Hadis berhasil ${action === 'add' ? 'ditambahkan' : 'diupdate'}!`, 'success');
+                    closeModal('friday-wisdom-modal');
+                    loadFridayWisdoms();
+                } else {
+                    showToast('Gagal: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                hideLoading();
+            }
+        });
+        
+        async function toggleFridayWisdomStatus(id, active) {
+            const wisdom = fridayWisdomsData.find(w => w.id == id);
+            if (!wisdom) return;
+            
+            wisdom.active = active;
+            
+            try {
+                await fetch(`${API_URL}?path=friday-wisdom&action=update`, {
+                    method: 'POST',
+                    body: JSON.stringify(wisdom)
+                });
+                showToast('Status diubah', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                loadFridayWisdoms();
+            }
+        }
+        
+        async function deleteFridayWisdom(id) {
+            if (!confirm('Yakin ingin menghapus?')) return;
+            
+            showLoading();
+            try {
+                await fetch(`${API_URL}?path=friday-wisdom&action=delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id })
+                });
+                showToast('Hadis dihapus!', 'success');
+                loadFridayWisdoms();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // ========================================
+        // HELPER FUNCTIONS
+        // ========================================
+        function resizeImage(file, maxWidth, maxHeight) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width = Math.floor(width * ratio);
+                            height = Math.floor(height * ratio);
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const resized = new File([blob], file.name, { type: file.type });
+                                resolve(resized);
+                            } else {
+                                reject(new Error('Gagal resize'));
+                            }
+                        }, file.type, 0.85);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -811,183 +2581,6 @@
                 reader.readAsDataURL(file);
             });
         }
-
-        // ============ SAVE FORMS ============
-        document.getElementById('config-form')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading();
-            
-            const formData = new FormData(this);
-            const configData = {};
-            formData.forEach((value, key) => { configData[key] = value; });
-            
-            // Simpan satu per satu (backend config pakai key-value)
-            for (let [key, value] of Object.entries(configData)) {
-                await fetchAPI('config', { action: 'update' }, 'POST', { key, value });
-            }
-            
-            showToast('Konfigurasi tersimpan');
-            hideLoading();
-        });
-
-        document.getElementById('wisdom-form')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading();
-            
-            const formData = new FormData(this);
-            const wisdom = {};
-            formData.forEach((value, key) => { wisdom[key] = value; });
-            wisdom.active = wisdom.active === 'on';
-            
-            const action = wisdom.id ? 'update' : 'add';
-            const result = await fetchAPI('wisdoms', { action }, 'POST', wisdom);
-            
-            if (result.success) {
-                showToast('Data tersimpan');
-                closeModal('wisdom-modal');
-                loadWisdoms();
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            
-            hideLoading();
-        });
-
-        document.getElementById('friday-wisdom-form')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading();
-            
-            const formData = new FormData(this);
-            const wisdom = {};
-            formData.forEach((value, key) => { wisdom[key] = value; });
-            wisdom.active = wisdom.active === 'on';
-            
-            const action = wisdom.id ? 'update' : 'add';
-            const result = await fetchAPI('friday-wisdom', { action }, 'POST', wisdom);
-            
-            if (result.success) {
-                showToast('Data tersimpan');
-                closeModal('friday-wisdom-modal');
-                loadFridayWisdoms();
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            
-            hideLoading();
-        });
-
-        document.getElementById('friday-schedule-form')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading();
-            
-            const formData = new FormData(this);
-            const schedule = {};
-            formData.forEach((value, key) => { schedule[key] = value; });
-            
-            const result = await fetchAPI('friday-schedule', { action: 'update' }, 'POST', schedule);
-            
-            if (result.success) {
-                showToast('Jadwal tersimpan');
-            } else {
-                showToast('Gagal: ' + (result.error || 'Unknown'), 'error');
-            }
-            
-            hideLoading();
-        });
-
-        // ============ SHOW ADD MODALS ============
-        function showAddWisdomModal() {
-            document.getElementById('wisdom-form').reset();
-            document.querySelector('#wisdom-form [name="id"]').value = '';
-            openModal('wisdom-modal');
-        }
-
-        function showAddFridayWisdomModal() {
-            document.getElementById('friday-wisdom-form').reset();
-            document.querySelector('#friday-wisdom-form [name="id"]').value = '';
-            openModal('friday-wisdom-modal');
-        }
-
-        function showUploadWallpaperModal() {
-            document.getElementById('wallpaper-file').value = '';
-            document.getElementById('wallpaper-preview').classList.add('hidden');
-            document.getElementById('wallpaper-upload-area').classList.remove('hidden');
-            document.getElementById('upload-progress').classList.add('hidden');
-            document.getElementById('wallpaper-order').value = (wallpapers.length + 1);
-            openModal('upload-wallpaper-modal');
-        }
-
-        function showUploadAnnouncementModal() {
-            alert('Upload pengumuman mirip dengan upload wallpaper. Silakan implementasikan dengan pola yang sama.');
-        }
-
-        // ============ NAVIGATION ============
-        function switchPage(page) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`page-${page}`)?.classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('bg-blue-50', 'text-blue-700');
-                if (link.dataset.page === page) {
-                    link.classList.add('bg-blue-50', 'text-blue-700');
-                }
-            });
-            
-            const titles = {
-                dashboard: 'Dashboard', config: 'Konfigurasi', wisdoms: 'Konten Hikmah',
-                wallpapers: 'Wallpaper', adabs: 'Adab Islam', 'friday-schedule': 'Jadwal Jumat',
-                announcements: 'Pengumuman Jumat', 'friday-wisdoms': 'Hadis Jumat'
-            };
-            document.getElementById('page-title').innerText = titles[page] || page;
-            
-            // Load data sesuai halaman
-            if (page === 'wisdoms' && !wisdoms.length) loadWisdoms();
-            if (page === 'friday-wisdoms' && !fridayWisdoms.length) loadFridayWisdoms();
-            if (page === 'wallpapers') loadWallpapers();
-            if (page === 'announcements') loadAnnouncements();
-            if (page === 'config') loadConfig();
-            if (page === 'friday-schedule') loadFridaySchedule();
-            
-            if (window.innerWidth < 1024) toggleSidebar();
-        }
-
-        // ============ INIT ============
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cek session
-            if (sessionStorage.getItem('adminAuth') === 'true') {
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
-                document.getElementById('user-display').innerText = sessionStorage.getItem('adminUser') || 'Admin';
-                document.getElementById('user-name').innerText = sessionStorage.getItem('adminUser') || 'Admin';
-                loadAllData();
-            }
-            
-            // Setup navigation
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    switchPage(this.dataset.page);
-                });
-            });
-            
-            // Tampilkan dashboard pertama
-            switchPage('dashboard');
-        });
-
-        // Expose functions
-        window.logout = logout;
-        window.toggleSidebar = toggleSidebar;
-        window.switchPage = switchPage;
-        window.closeModal = closeModal;
-        window.showAddWisdomModal = showAddWisdomModal;
-        window.showAddFridayWisdomModal = showAddFridayWisdomModal;
-        window.showUploadWallpaperModal = showUploadWallpaperModal;
-        window.showUploadAnnouncementModal = showUploadAnnouncementModal;
-        window.uploadWallpaper = uploadWallpaper;
-        window.deleteWisdom = deleteWisdom;
-        window.deleteFridayWisdom = deleteFridayWisdom;
-        window.deleteWallpaper = deleteWallpaper;
-        window.deleteAnnouncement = deleteAnnouncement;
     </script>
 </body>
 </html>
