@@ -992,10 +992,10 @@
             
             <form id="login-form">
                 <div class="form-group">
-                    <input type="text" id="username" placeholder="Username">
+                    <input type="text" id="username" placeholder="Username" value="masjid" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="password" placeholder="Password">
+                    <input type="password" id="password" placeholder="Password" value="Password321" required>
                 </div>
                 <button type="submit" id="btn-login">
                     <i class="fas fa-sign-in-alt"></i> Masuk
@@ -1082,8 +1082,8 @@
                             <div class="form-group"><label>Nama Masjid</label><input type="text" name="masjid_name" required></div>
                             <div class="form-group"><label>Alamat Masjid</label><textarea name="masjid_address" rows="3" required></textarea></div>
                             <div class="form-row">
-                                <div class="form-group"><label>Latitude</label><input type="text" name="latitude" required placeholder="-6.5456"><small class="error-message" id="error-latitude"></small></div>
-                                <div class="form-group"><label>Longitude</label><input type="text" name="longitude" required placeholder="106.7367"><small class="error-message" id="error-longitude"></small></div>
+                                <div class="form-group"><label>Latitude</label><input type="text" name="latitude" required pattern="-?\d+\.?\d*" placeholder="-6.5456" title="Contoh: -6.5456"><small class="error-message" id="error-latitude"></small></div>
+                                <div class="form-group"><label>Longitude</label><input type="text" name="longitude" required pattern="-?\d+\.?\d*" placeholder="106.7367" title="Contoh: 106.7367"><small class="error-message" id="error-longitude"></small></div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group"><label>Timezone</label><select name="timezone" required><option value="Asia/Jakarta">Asia/Jakarta (WIB)</option><option value="Asia/Makassar">Asia/Makassar (WITA)</option><option value="Asia/Jayapura">Asia/Jayapura (WIT)</option></select></div>
